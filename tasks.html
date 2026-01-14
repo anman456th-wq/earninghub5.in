@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Tasks | Earn Points</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f2f4f8;
+}
+.box{
+  max-width:480px;
+  margin:25px auto;
+  background:#fff;
+  border-radius:14px;
+  box-shadow:0 8px 25px rgba(0,0,0,.15);
+  overflow:hidden;
+}
+.header{
+  background:#e60000;
+  color:#fff;
+  padding:18px;
+  text-align:center;
+  font-size:20px;
+  font-weight:bold;
+}
+.section{
+  padding:20px;
+}
+.task{
+  border:1px solid #ddd;
+  border-radius:10px;
+  padding:15px;
+  margin-bottom:15px;
+}
+.task h4{
+  margin:0 0 6px 0;
+}
+.task p{
+  margin:0;
+  font-size:14px;
+  color:#555;
+}
+button{
+  width:100%;
+  margin-top:12px;
+  padding:12px;
+  font-size:15px;
+  border:none;
+  border-radius:8px;
+  background:#1abc9c;
+  color:#fff;
+  cursor:pointer;
+}
+button:disabled{
+  background:#aaa;
+}
+.msg{
+  margin-top:8px;
+  font-size:13px;
+  font-weight:bold;
+}
+.note{
+  font-size:13px;
+  color:#666;
+  text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+  <div class="header">🎯 Complete Tasks & Earn Points</div>
+
+  <div class="section">
+
+    <!-- SUBSCRIBE TASK -->
+    <div class="task">
+      <h4>Subscribe YouTube Channel</h4>
+      <p>Earn <b>10 Points</b> (Only once)</p>
+      <button id="subBtn" onclick="subscribeTask()">Subscribe Now</button>
+      <div class="msg" id="subMsg"></div>
+    </div>
+
+    <!-- VIDEO TASKS -->
+    <div class="task">
+      <h4>Watch Video #1</h4>
+      <p>Earn <b>2 Points</b> every time</p>
+      <button onclick="watchVideo(1)">Watch Video</button>
+      <div class="msg" id="v1"></div>
+    </div>
+
+    <div class="task">
+      <h4>Watch Video #2</h4>
+      <p>Earn <b>2 Points</b> every time</p>
+      <button onclick="watchVideo(2)">Watch Video</button>
+      <div class="msg" id="v2"></div>
+    </div>
+
+    <div class="task">
+      <h4>Watch Video #3</h4>
+      <p>Earn <b>2 Points</b> every time</p>
+      <button onclick="watchVideo(3)">Watch Video</button>
+      <div class="msg" id="v3"></div>
+    </div>
+
+    <div class="task">
+      <h4>Watch Video #4</h4>
+      <p>Earn <b>2 Points</b> every time</p>
+      <button onclick="watchVideo(4)">Watch Video</button>
+      <div class="msg" id="v4"></div>
+    </div>
+
+    <div class="note">
+      🔁 Videos can be watched unlimited times<br>
+      🔒 Subscribe reward only once
+    </div>
+
+  </div>
+  <button onclick="addPoints(2)">Watch Video (+2)</button>
+
+</div>
+
+<script>
+function addPoints(p){
+  let points = Number(localStorage.getItem("userPoints")) || 0;
+  points += p;
+  localStorage.setItem("userPoints", points);
+  alert("✅ +" + p + " Points Added");
+}
+
+/* ===== USER POINTS ===== */
+let points = Number(localStorage.getItem("userPoints")) || 0;
+
+/* ===== SUBSCRIBE STATUS ===== */
+let subscribed = localStorage.getItem("subscribed");
+
+/* ===== YOUTUBE LINKS (ONLY YOUR CHANNEL) ===== */
+const channelLink = "https://youtube.com/@amansidhu15";
+const videos = {
+  1: "https://youtube.com/shorts/vvFqZ6sKmyM?si=n4zOnhOAmg71fkUf/VIDEO_ID_1",
+  2: "https://youtube.com/shorts/VIDEO_ID_2",
+  3: "https://youtube.com/shorts/Ph-0VRT9b_o?si=Opu3GfJPAQUa2tTB/VIDEO_ID_3",
+  4: "https://youtube.com/shorts/1m6ONAV2JN0?si=vREBivOBr-spZmSS/VIDEO_ID_4"
+};
+
+/* ===== SUBSCRIBE TASK ===== */
+function subscribeTask(){
+  if(subscribed){
+    document.getElementById("subMsg").innerText = "❌ Already rewarded";
+    document.getElementById("subMsg").style.color = "red";
+    return;
+  }
+
+  window.open(channelLink, "_blank");
+
+  points += 10;
+  localStorage.setItem("userPoints", points);
+  localStorage.setItem("subscribed", "yes");
+
+  document.getElementById("subMsg").innerText =
+    "✅ Subscribed! +10 Points (Total: " + points + ")";
+  document.getElementById("subMsg").style.color = "green";
+
+  document.getElementById("subBtn").disabled = true;
+}
+
+/* ===== VIDEO TASK ===== */
+function watchVideo(id){
+  window.open(videos[id], "_blank");
+
+  points += 2;
+  localStorage.setItem("userPoints", points);
+
+  document.getElementById("v"+id).innerText =
+    "✅ +2 Points (Total: " + points + ")";
+  document.getElementById("v"+id).style.color = "green";
+}
+
+/* ===== DISABLE SUBSCRIBE IF ALREADY DONE ===== */
+if(subscribed){
+  document.getElementById("subBtn").disabled = true;
+  document.getElementById("subMsg").innerText = "✔ Already Subscribed";
+  document.getElementById("subMsg").style.color = "green";
+}
+</script>
+
+</body>
+</html>
