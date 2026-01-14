@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Earning Hub | Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: linear-gradient(to right, #4ca1af, #c4e0e5);
+  color: #333;
+}
+
+/* Header with Settings Icon */
+header {
+  background: #0b3c5d;
+  color: #fff;
+  padding: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header h1 {
+  margin: 0;
+}
+
+header .settings-icon {
+  font-size: 24px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+header .settings-icon:hover {
+  color: #1abc9c;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 30px auto;
+  padding: 20px;
+}
+
+.balance {
+  text-align: center;
+  background: #f1f1f1;
+  padding: 15px;
+  border-radius: 10px;
+  font-size: 22px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 20px;
+}
+
+.card {
+  background: #fff;
+  width: 220px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  padding: 20px;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.card h3 {
+  margin-top: 0;
+  color: #0b3c5d;
+}
+
+.card button {
+  margin-top: 15px;
+  padding: 10px 15px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background: #1abc9c;
+  color: #fff;
+  transition: background 0.3s;
+}
+
+.card button:hover {
+  background: #16a085;
+}
+
+.logout {
+  display: block;
+  margin: 30px auto 0;
+  background: #e74c3c;
+  color: #fff;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.logout:hover {
+  background: #c0392b;
+}
+
+.message {
+  margin-top: 20px;
+  text-align: center;
+  font-weight: bold;
+  color: green;
+  font-size: 16px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Earning Hub</h1>
+  <span class="settings-icon" onclick="openSettings()">⚙️</span>
+</header>
+
+<div class="container">
+
+  <!-- Balance -->
+  <div class="balance">
+    Points: <span id="points">0</span>
+  </div>
+
+  <!-- Cards -->
+  <div class="cards">
+
+    <!-- Ads -->
+    <div class="card">
+      <h3>Ads</h3>
+      <img src="https://via.placeholder.com/150x80?text=Ad" alt="Ad" style="border-radius:5px;">
+      <button onclick="openPage('ads.html', 1)">Watch Ad (+1)</button>
+    </div>
+
+    <!-- Tasks -->
+    <div class="card">
+      <h3>Tasks</h3>
+      <img src="https://via.placeholder.com/150x80?text=Task" alt="Task" style="border-radius:5px;">
+    <button onclick="location.href='tasks.html'">
+  🎯 Earn Points
+</button>
+    </div>
+
+    <!-- Survey -->
+    <div class="card">
+      <h3>Survey</h3>
+      <img src="https://via.placeholder.com/150x80?text=Survey" alt="Survey" style="border-radius:5px;">
+      <button onclick="openPage('survey.html', 3)">Complete Survey (+3)</button>
+    </div>
+
+    <!-- Refer -->
+    <div class="card">
+      <h3>Refer & Earn</h3>
+      <img src="https://via.placeholder.com/150x80?text=Refer+Friend" alt="Refer" style="border-radius:5px;">
+      <button onclick="showReferral()">Refer Friend (+5)</button>
+      <p id="refLink" style="font-size:12px;"></p>
+    </div>
+
+  </div>
+
+  <!-- Logout -->
+  <button class="logout" onclick="logout()">Logout</button>
+
+  <!-- Message -->
+  <div class="message" id="message"></div>
+
+</div>
+
+<!-- JS -->
+<script>
+<script>
+let points = 0;
+const pointToRupee = 1;
+let userBalance = { points: points, rupees: points * pointToRupee };
+
+// Navigate to page and add points
+
+function addPoints(p){
+
+  const today = new Date().toDateString();
+
+  let points = Number(localStorage.getItem("userPoints")) || 0;
+  let dailyPoints = Number(localStorage.getItem("dailyPoints")) || 0;
+  let lastDate = localStorage.getItem("lastPointDate");
+
+  // 🔄 New day → reset daily counter
+  if(lastDate !== today){
+    dailyPoints = 0;
+    localStorage.setItem("lastPointDate", today);
+  }
+
+  // ⛔ Daily limit reached
+  if(dailyPoints >= 100){
+    alert("❌ Daily limit reached (100 points max per day)");
+    return;
+  }
+
+  // 🔒 Don't cross 100
+  if(dailyPoints + p > 100){
+    p = 100 - dailyPoints;
+  }
+
+  // ➕ Add points
+  points += p;
+  dailyPoints += p;
+
+  // 💾 Save
+  localStorage.setItem("userPoints", points);
+  localStorage.setItem("dailyPoints", dailyPoints);
+
+  alert("✅ +" + p + " Points Added (Today: " + dailyPoints + "/100)");
+}
+
+}
+
+// Show referral link
+function showReferral() {
+  const userId = "USER123"; // replace with real Firebase UID after login
+  const link = `https://yourwebsite.com/signup.html?ref=${userId}`;
+  document.getElementById("refLink").innerText = "Your Referral Link:\n" + link;
+  document.getElementById('message').innerText = "Share this link with friends!";
+}
+
+// Logout
+function logout() {
+  localStorage.setItem('userPoints', userBalance.points);
+  localStorage.setItem('userRupees', userBalance.rupees);
+  alert("You are logged out!");
+  window.location.href = "login.html";
+}
+
+// Settings icon click
+function openSettings() {
+  // Navigate to settings page
+  window.location.href = "settings.html";
+}
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  let points = Number(localStorage.getItem("userPoints")) || 0;
+  document.getElementById("points").innerText = points;
+});
+</script>
+<span id="points">0</span>
+</body>
+</html>
